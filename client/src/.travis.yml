@@ -1,0 +1,25 @@
+language: generic 
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t claytonnog/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run CI=true claytonnog/react-test npm test
+
+after_success:
+  - docker build -t claytonnog/multi-client ./client
+  - docker build -t claytonnog/multi-nginx ./nginx
+  - docker build -t claytonnog/multi-server ./server
+  - docker build -t claytonnog/multi-worker ./worker
+  # log in to the docker CLI  
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # take those images and push them to docker hub
+  - docker push claytonnog/multi-client
+  - docker push claytonnog/multi-nginx
+  - docker push claytonnog/multi-server
+  - docker push claytonnog/multi-worker
+
