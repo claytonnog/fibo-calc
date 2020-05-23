@@ -23,3 +23,15 @@ after_success:
   - docker push claytonnog/multi-server
   - docker push claytonnog/multi-worker
 
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: multi-docker
+  env: MultiDocker-env
+  bucket-name: clayton-neves-multi-docker
+  bucket-path: docker-multi
+  on:
+    branch: master
+  acces_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
